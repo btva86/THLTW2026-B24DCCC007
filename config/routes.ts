@@ -25,6 +25,13 @@
 		icon: 'HomeOutlined',
 	},
 	{
+		path: '/products',
+		name: 'Quản lý sản phẩm',
+		icon: 'ShoppingOutlined',
+		component: './products',
+	  },
+	  
+	{
 		path: '/gioi-thieu',
 		name: 'About',
 		component: './TienIch/GioiThieu',
