@@ -82,6 +82,7 @@
 				exact: true,
 				component: './ThongBao/NotifOneSignal',
 			},
+			
 		],
 		layout: false,
 		hideInMenu: true,
@@ -98,6 +99,16 @@
 		path: '/hold-on',
 		component: './exception/DangCapNhat',
 		layout: false,
+	},
+	{
+		name: 'Trò chơi',
+		path: '/th01',
+		component: '@/pages/th01',
+	},
+	{
+		name: 'Quản lý học tập',
+		path: '/th02',
+		component: '@/pages/th02',
 	},
 	{
 		component: './exception/404',
