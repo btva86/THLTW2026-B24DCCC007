@@ -103,13 +103,27 @@
 	{
 		name: 'Trò chơi',
 		path: '/th01',
+		icon: 'TrophyOutlined',
 		component: '@/pages/th01',
 	},
 	{
 		name: 'Quản lý học tập',
 		path: '/th02',
+		icon: 'ReadOutlined',
 		component: '@/pages/th02',
 	},
+	{
+		path: '/th03',
+		name: 'Oẳn Tù Tì',
+		icon: 'ScissorOutlined',
+		component: '@/pages/th03',
+	},
+	{
+		path: '/th04',
+		name: 'Ngân hàng câu hỏi',
+		icon: 'DatabaseOutlined',
+		component: '@/pages/th02',
+ },
 	{
 		component: './exception/404',
 	},
