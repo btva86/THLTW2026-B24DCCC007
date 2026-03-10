@@ -122,7 +122,7 @@
 		path: '/th04',
 		name: 'Ngân hàng câu hỏi',
 		icon: 'DatabaseOutlined',
-		component: '@/pages/th02',
+		component: '@/pages/th04',
  },
 	{
 		component: './exception/404',
