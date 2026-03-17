@@ -123,7 +123,14 @@
 		name: 'Ngân hàng câu hỏi',
 		icon: 'DatabaseOutlined',
 		component: '@/pages/th04',
- },
+    },
+    {
+		path: '/TH3',
+		name: 'Đặt lịch dịch vụ',
+		icon: 'calendar',
+		component: '@/pages/TH3'
+    },
+
 	{
 		component: './exception/404',
 	},
