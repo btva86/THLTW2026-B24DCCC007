@@ -6,205 +6,204 @@ import {
   TimePicker,
   Button,
   Table,
-  Rate,
+  message,
+  Tag,
   Row,
   Col,
   Statistic,
-  message
 } from "antd";
-import dayjs from "dayjs";
+import {
+  UserOutlined,
+  ScissorOutlined,
+  CalendarOutlined,
+} from "@ant-design/icons";
 
 const { Option } = Select;
 
-const BookingService = () => {
+export default function TH03() {
   // ===== DATA =====
-  const [employees, setEmployees] = useState([
-    { id: 1, name: "Nguyễn Văn A", limit: 5, start: 8, end: 16 },
-    { id: 2, name: "Trần Thị B", limit: 4, start: 9, end: 17 },
-    { id: 3, name: "Lê Văn C", limit: 6, start: 10, end: 18 }
+  const [employees] = useState([
+    { id: 1, name: "An", start: 8, end: 17, limit: 5 },
+    { id: 2, name: "Bình", start: 9, end: 18, limit: 4 },
   ]);
 
-  const [services, setServices] = useState([
-    { id: 1, name: "Cắt tóc", price: 100, duration: 30 },
-    { id: 2, name: "Gội đầu", price: 50, duration: 20 },
-    { id: 3, name: "Spa mặt", price: 200, duration: 60 },
-    { id: 4, name: "Massage", price: 300, duration: 90 }
+  const [services] = useState([
+    { id: 1, name: "Cắt tóc", price: 100000 },
+    { id: 2, name: "Spa", price: 300000 },
   ]);
 
   const [appointments, setAppointments] = useState<any[]>([]);
 
-  // ===== FORM =====
-  const [selectedEmp, setSelectedEmp] = useState<number | null>(null);
-  const [selectedService, setSelectedService] = useState<number | null>(null);
+  // ===== STATE =====
+  const [empId, setEmpId] = useState<number | null>(null);
+  const [serviceId, setServiceId] = useState<number | null>(null);
   const [date, setDate] = useState<any>(null);
   const [time, setTime] = useState<any>(null);
 
-  // ===== ADD EMPLOYEE =====
-  const addEmployee = () => {
-    const name = prompt("Tên nhân viên:");
-    const limit = Number(prompt("Số khách/ngày:"));
-    const start = Number(prompt("Giờ bắt đầu (vd: 9):"));
-    const end = Number(prompt("Giờ kết thúc (vd: 17):"));
-
-    if (!name) return;
-
-    setEmployees([
-      ...employees,
-      { id: Date.now(), name, limit, start, end }
-    ]);
-  };
-
-  // ===== ADD SERVICE =====
-  const addService = () => {
-    const name = prompt("Tên dịch vụ:");
-    const price = Number(prompt("Giá:"));
-    const duration = Number(prompt("Thời gian (phút):"));
-
-    if (!name) return;
-
-    setServices([
-      ...services,
-      { id: Date.now(), name, price, duration }
-    ]);
-  };
-
-  // ===== ADD APPOINTMENT =====
+  // ===== ADD =====
   const addAppointment = () => {
-    if (!selectedEmp || !selectedService || !date || !time) {
-      message.error("❌ Thiếu dữ liệu!");
-      return;
+    if (!empId || !serviceId || !date || !time) {
+      return message.error("Nhập đầy đủ thông tin!");
     }
 
-    const emp = employees.find((e) => e.id === selectedEmp);
-    const service = services.find((s) => s.id === selectedService);
+    const emp = employees.find((e) => e.id === empId);
+    if (!emp) return message.error("Nhân viên không tồn tại!");
 
-    if (!emp || !service) {
-      message.error("❌ Không tìm thấy dữ liệu!");
-      return;
+    const hour = Number(time.format("HH"));
+
+    if (hour < emp.start || hour > emp.end) {
+      return message.error("Ngoài giờ làm!");
     }
 
-    const d = dayjs(date).format("DD/MM/YYYY");
-    const t = dayjs(time).format("HH:mm");
-    const hour = Number(t.split(":")[0]);
+    const d = date.format("DD/MM/YYYY");
+    const t = time.format("HH:mm");
 
-    // ❌ check giờ làm
-    if (hour < emp.start || hour >= emp.end) {
-      message.error("❌ Ngoài giờ làm!");
-      return;
-    }
-
-    // ❌ check trùng
     const duplicate = appointments.some(
-      (a) =>
-        a.empId === emp.id &&
-        a.date === d &&
-        a.time === t
+      (a) => a.empId === empId && a.date === d && a.time === t
     );
 
-    if (duplicate) {
-      message.error("❌ Trùng lịch!");
-      return;
-    }
+    if (duplicate) return message.error("Trùng lịch!");
 
-    // ❌ check giới hạn/ngày
     const count = appointments.filter(
-      (a) =>
-        a.empId === emp.id &&
-        a.date === d
+      (a) => a.empId === empId && a.date === d
     ).length;
 
     if (count >= emp.limit) {
-      message.error("❌ Đã đạt giới hạn/ngày!");
-      return;
+      return message.error("Đã đủ khách/ngày!");
     }
 
-    const newApp = {
-      id: Date.now(),
-      empId: emp.id,
-      empName: emp.name,
-      serviceName: service.name,
-      price: service.price,
-      date: d,
-      time: t,
-      status: "Chờ duyệt",
-      rating: 0
-    };
+    setAppointments([
+      ...appointments,
+      {
+        id: Date.now(),
+        empId,
+        serviceId,
+        date: d,
+        time: t,
+        status: "Chờ duyệt",
+      },
+    ]);
 
-    setAppointments([...appointments, newApp]);
-    message.success("✅ Đặt lịch thành công!");
+    message.success("Đặt lịch thành công!");
   };
 
   // ===== UPDATE STATUS =====
   const updateStatus = (id: number, status: string) => {
-    setAppointments(
-      appointments.map((a) =>
-        a.id === id ? { ...a, status } : a
-      )
+    setAppointments((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, status } : a))
     );
   };
-
-  // ===== UPDATE RATING =====
-  const updateRating = (id: number, rating: number) => {
-    setAppointments(
-      appointments.map((a) =>
-        a.id === id ? { ...a, rating } : a
-      )
-    );
-  };
-
-  // ===== STATS =====
-  const totalAppointments = appointments.length;
-
-  const totalRevenue = appointments
-    .filter((a) => a.status === "Hoàn thành")
-    .reduce((sum, a) => sum + a.price, 0);
 
   // ===== TABLE =====
   const columns = [
-    { title: "Nhân viên", dataIndex: "empName" },
-    { title: "Dịch vụ", dataIndex: "serviceName" },
+    {
+      title: "Nhân viên",
+      render: (r: any) =>
+        employees.find((e) => e.id === r.empId)?.name,
+    },
+    {
+      title: "Dịch vụ",
+      render: (r: any) =>
+        services.find((s) => s.id === r.serviceId)?.name,
+    },
     { title: "Ngày", dataIndex: "date" },
     { title: "Giờ", dataIndex: "time" },
-
     {
       title: "Trạng thái",
-      render: (_: any, record: any) => (
-        <Select
-          value={record.status}
-          style={{ width: 120 }}
-          onChange={(value) => updateStatus(record.id, value)}
-        >
-          <Option value="Chờ duyệt">Chờ duyệt</Option>
-          <Option value="Xác nhận">Xác nhận</Option>
-          <Option value="Hoàn thành">Hoàn thành</Option>
-          <Option value="Hủy">Hủy</Option>
-        </Select>
-      )
+      render: (r: any) => {
+        const color =
+          r.status === "Chờ duyệt"
+            ? "orange"
+            : r.status === "Xác nhận"
+            ? "blue"
+            : r.status === "Hoàn thành"
+            ? "green"
+            : "red";
+        return <Tag color={color}>{r.status}</Tag>;
+      },
     },
-
     {
-      title: "Đánh giá",
-      render: (_: any, record: any) => (
-        <Rate
-          value={record.rating}
-          onChange={(value) => updateRating(record.id, value)}
-        />
-      )
-    }
+      title: "Hành động",
+      render: (r: any) => (
+        <>
+          <Button
+            size="small"
+            onClick={() => updateStatus(r.id, "Xác nhận")}
+          >
+            ✔ Xác nhận
+          </Button>{" "}
+          <Button
+            size="small"
+            onClick={() => updateStatus(r.id, "Hoàn thành")}
+          >
+            ✅ Hoàn thành
+          </Button>{" "}
+          <Button
+            danger
+            size="small"
+            onClick={() => updateStatus(r.id, "Hủy")}
+          >
+            ❌ Hủy
+          </Button>
+        </>
+      ),
+    },
   ];
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>📅 Đặt lịch dịch vụ</h2>
+      {/* TITLE */}
+      <h2 style={{ marginBottom: 20 }}>
+        <CalendarOutlined /> Hệ thống đặt lịch dịch vụ
+      </h2>
+
+      {/* DASHBOARD */}
+      <Row gutter={16} style={{ marginBottom: 20 }}>
+        <Col span={8}>
+          <Card>
+            <Statistic
+              title="Tổng lịch"
+              value={appointments.length}
+            />
+          </Card>
+        </Col>
+
+        <Col span={8}>
+          <Card>
+            <Statistic
+              title="Hoàn thành"
+              value={
+                appointments.filter((a) => a.status === "Hoàn thành")
+                  .length
+              }
+            />
+          </Card>
+        </Col>
+
+        <Col span={8}>
+          <Card>
+            <Statistic
+              title="Đã hủy"
+              value={
+                appointments.filter((a) => a.status === "Hủy").length
+              }
+            />
+          </Card>
+        </Col>
+      </Row>
 
       {/* FORM */}
-      <Card style={{ marginBottom: 20 }}>
+      <Card
+        title="📝 Tạo lịch hẹn"
+        style={{ marginBottom: 20, borderRadius: 12 }}
+      >
         <Row gutter={10}>
-          <Col>
+          <Col span={5}>
             <Select
               placeholder="Nhân viên"
-              style={{ width: 150 }}
-              onChange={(value) => setSelectedEmp(value)}
+              style={{ width: "100%" }}
+              onChange={setEmpId}
+              suffixIcon={<UserOutlined />}
             >
               {employees.map((e) => (
                 <Option key={e.id} value={e.id}>
@@ -214,65 +213,57 @@ const BookingService = () => {
             </Select>
           </Col>
 
-          <Col>
+          <Col span={5}>
             <Select
               placeholder="Dịch vụ"
-              style={{ width: 150 }}
-              onChange={(value) => setSelectedService(value)}
+              style={{ width: "100%" }}
+              onChange={setServiceId}
+              suffixIcon={<ScissorOutlined />}
             >
               {services.map((s) => (
                 <Option key={s.id} value={s.id}>
-                  {s.name}
+                  {s.name} ({s.price}đ)
                 </Option>
               ))}
             </Select>
           </Col>
 
-          <Col>
-            <DatePicker onChange={(value) => setDate(value)} />
-          </Col>
-
-          <Col>
-            <TimePicker
-              format="HH:mm"
-              onChange={(value) => setTime(value)}
+          <Col span={5}>
+            <DatePicker
+              style={{ width: "100%" }}
+              onChange={setDate}
             />
           </Col>
 
-          <Col>
-            <Button type="primary" onClick={addAppointment}>
-              Đặt lịch
+          <Col span={5}>
+            <TimePicker
+              style={{ width: "100%" }}
+              format="HH:mm"
+              onChange={setTime}
+            />
+          </Col>
+
+          <Col span={4}>
+            <Button
+              type="primary"
+              block
+              onClick={addAppointment}
+            >
+              ➕ Đặt lịch
             </Button>
           </Col>
         </Row>
       </Card>
 
-      {/* BUTTON */}
-      <Button onClick={addEmployee} style={{ marginRight: 10 }}>
-        + Nhân viên
-      </Button>
-      <Button onClick={addService}>+ Dịch vụ</Button>
-
       {/* TABLE */}
-      <Table
-        style={{ marginTop: 20 }}
-        columns={columns}
-        dataSource={appointments}
-        rowKey="id"
-      />
-
-      {/* STATS */}
-      <Row gutter={20} style={{ marginTop: 20 }}>
-        <Col>
-          <Statistic title="Tổng lịch" value={totalAppointments} />
-        </Col>
-
-        <Col>
-          <Statistic title="Doanh thu" value={totalRevenue} />
-        </Col>
-      </Row>
+      <Card title="📋 Danh sách lịch hẹn" style={{ borderRadius: 12 }}>
+        <Table
+          dataSource={appointments}
+          columns={columns}
+          rowKey="id"
+          pagination={{ pageSize: 5 }}
+        />
+      </Card>
     </div>
   );
-};
-
-export default BookingService;
+}
