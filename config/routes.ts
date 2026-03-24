@@ -130,6 +130,12 @@
 		icon: 'calendar',
 		component: '@/pages/TH3'
     },
+	{
+		path: '/TH4',
+		name: 'Quản lý văn bằng',
+		icon: 'BookOutlined',
+		component: '@/pages/TH4',
+	  },
 
 	{
 		component: './exception/404',
