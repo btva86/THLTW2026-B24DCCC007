@@ -135,8 +135,14 @@
 		name: 'Quản lý văn bằng',
 		icon: 'BookOutlined',
 		component: '@/pages/TH4',
-	  },
-
+	},
+	{
+		path: '/TH5',
+		name: 'Quản lý Câu Lạc Bộ',
+		icon: 'TeamOutlined',
+		component: '@/pages/TH5/index',
+	},
+		
 	{
 		component: './exception/404',
 	},
