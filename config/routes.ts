@@ -142,6 +142,12 @@
 		icon: 'TeamOutlined',
 		component: '@/pages/TH5/index',
 	},
+	{
+		path: '/TH6',
+		name: 'Lập kế hoạch du lịch',
+		icon: 'CarOutlined',
+		component: '@/pages/TH6/TH06Page',
+	},
 		
 	{
 		component: './exception/404',
