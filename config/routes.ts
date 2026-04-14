@@ -148,6 +148,12 @@
 		icon: 'CarOutlined',
 		component: '@/pages/TH6/TH06Page',
 	},
+	{
+		path: '/KTGK',
+		name: 'Quản lý khoá học',
+		icon: 'BookOutlined',
+		component: '@/pages/KTGK/CourseManager',
+	},
 		
 	{
 		component: './exception/404',
