@@ -154,6 +154,18 @@
 		icon: 'BookOutlined',
 		component: '@/pages/KTGK/CourseManager',
 	},
+	{
+		path: '/TH7',
+		name: 'Quản lý cá nhân',
+		icon: 'UserOutlined',
+		component: '@/pages/TH7/index',
+	},
+	{
+		path: '/TH8',
+		name: 'Quản lý sức khoẻ',
+		icon: 'HeartOutlined',
+		component: '@/pages/TH8/index',
+	},
 		
 	{
 		component: './exception/404',
