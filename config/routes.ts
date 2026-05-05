@@ -166,6 +166,13 @@
 		icon: 'HeartOutlined',
 		component: '@/pages/TH8/index',
 	},
+	{
+		path: '/TH09',
+		name: 'Quản lý công việc',
+		icon: 'CheckOutlined',
+		component: '@/pages/TH09/index',
+
+	},
 		
 	{
 		component: './exception/404',
